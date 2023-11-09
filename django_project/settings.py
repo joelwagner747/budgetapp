@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
-    "cities_light",
+    "django_countries",
+    "djmoney",
+    "budgets",
 ]
 
 MIDDLEWARE = [
