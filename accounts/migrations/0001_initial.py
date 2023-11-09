@@ -11,7 +11,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("cities_light", "0011_alter_city_country_alter_city_region_and_more"),
         ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
