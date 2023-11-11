@@ -1,5 +1,8 @@
 from django.forms import ModelForm
+from .models import Transaction
 
 
 class CreateTransactionForm(ModelForm):
-    pass
+    class Meta:
+        model = Transaction
+        fields = []
