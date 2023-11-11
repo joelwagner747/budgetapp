@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add new Trasaction</h1>
+
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit"><a href="{% url 'add_transaction' %}?next={{ request.path }}">Add Transaction</a></button>
+</form>
+{% endblock content %}

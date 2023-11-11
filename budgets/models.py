@@ -7,9 +7,24 @@ from django.conf import settings
 # Create your models here.
 
 
-class Category(models.Model):
+class Budget(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    name = name = models.CharField(max_length=255)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("budget", kwargs={"pk": self.pk})
+
+
+class Category(models.Model):
+    budget = models.ForeignKey(
+        "Budget",
         on_delete=models.CASCADE,
     )
     name = models.CharField(max_length=255)
@@ -34,8 +49,8 @@ class Transaction(models.Model):
         decimal_places=2,
         default_currency="USD",
     )
-    Date = models.DateField(default=date.today)
-    catagory = models.ForeignKey(
+    date = models.DateField(default=date.today)
+    category = models.ForeignKey(
         "Category",
         on_delete=models.CASCADE,
     )
@@ -45,8 +60,8 @@ class Transaction(models.Model):
 
 
 class Income(models.Model):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+    budget = models.ForeignKey(
+        "Budget",
         on_delete=models.CASCADE,
     )
     monthly_income = MoneyField(
