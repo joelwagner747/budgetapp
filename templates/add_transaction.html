@@ -3,9 +3,35 @@
 {% block content %}
 <h1>Add new Trasaction</h1>
 
-<form action="" method="post">{% csrf_token %}
+<form method="post">
+    {% csrf_token %}
+
     {{ form.as_p }}
 
-    <button type="submit"><a href="{% url 'add_transaction' %}?next={{ request.path }}">Add Transaction</a></button>
+    <button type="submit">Add Transaction</button>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#id_budget').change(function () {
+            var budgetId = $(this).val();
+            $.ajax({
+                url: '/get_categories/',
+                data: {
+                    'budget_id': budgetId
+                },
+                success: function (data) {
+                    // Clear previous options
+                    $('#id_category').empty();
+
+                    // Add new options
+                    $.each(data, function (key, value) {
+                        $('#id_category').append('<option value="' + value.id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+        });
+    });
+</script>
 {% endblock content %}

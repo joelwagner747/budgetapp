@@ -54,6 +54,10 @@ class Transaction(models.Model):
         "Category",
         on_delete=models.CASCADE,
     )
+    budget = models.ForeignKey(
+        "Budget",
+        on_delete=models.CASCADE,
+    )
 
     def __str__(self):
         return f"{self.merchant} {self.amount}"
