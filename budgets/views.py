@@ -41,7 +41,7 @@ class AddTransactionView(View):
         return reverse("user_home")"""
 
 
-class GetCategoriesView(View):
+"""class GetCategoriesView(View):
     def get(self, request, *args, **kwargs):
         form = CreateCategoryForm
         budget_id = request.GET.get("budget_id")
@@ -49,6 +49,17 @@ class GetCategoriesView(View):
         category_list = [
             {"id": category.id, "form": form, "name": category.name}
             for category in categories
+        ]
+        return JsonResponse(category_list, safe=False)"""
+
+
+class GetCategoriesView(View):
+    def get(self, request, *args, **kwargs):
+        form = CreateCategoryForm()  # Instantiate the form
+        budget_id = request.GET.get("budget_id")
+        categories = Category.objects.filter(budget_id=budget_id)
+        category_list = [
+            {"id": category.id, "name": category.name} for category in categories
         ]
         return JsonResponse(category_list, safe=False)
 
