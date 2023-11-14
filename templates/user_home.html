@@ -4,4 +4,5 @@
 {% for budget in budget_list %}
 <p><a href="{{ budget.get_absolute_url }}">{{ budget.name }}</a></p>
 {% endfor %}
+<p><a href="{% url 'add_budget' %}">Add Budget</a></p>
 {% endblock content %}
