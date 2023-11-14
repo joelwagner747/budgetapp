@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add new Trasaction</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">Add Transaction</button>
+</form>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Disable the category select initially
+        $('#id_category').prop('disabled', true);
+
+        $('#id_budget').change(function () {
+            var budgetId = $(this).val();
+
+            // Fetch categories based on the selected budget
+            if (budgetId) {
+                $.ajax({
+                    url: '/get_categories/',
+                    data: {
+                        'budget_id': budgetId
+                    },
+                    success: function (data) {
+                        // Enable the category select
+                        $('#id_category').prop('disabled', false);
+
+                        // Clear previous options
+                        $('#id_category').empty();
+
+                        // Add new options
+                        $.each(data, function (key, value) {
+                            $('#id_category').append('<option value="' + value.id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            } else {
+                // If no budget is selected, clear and disable the category select
+                $('#id_category').empty().prop('disabled', true);
+            }
+        });
+    });
+</script>
+{% endblock content %}

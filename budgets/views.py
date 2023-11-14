@@ -1,0 +1,152 @@
+from typing import Any
+from django.shortcuts import render, redirect
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, View, TemplateView, FormView
+from django.urls import reverse_lazy, reverse
+from django.views.generic.detail import SingleObjectMixin
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from djmoney.money import Money
+from .models import Transaction, Budget, Income, Category
+from .forms import CreateTransactionForm, CreateCategoryForm
+
+
+class AddTransactionView(View):
+    template_name = "add_transaction.html"
+
+    def get(self, request, *args, **kwargs):
+        form = CreateTransactionForm(user=request.user)
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = CreateTransactionForm(request.POST, user=request.user)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            if transaction.category.budget != transaction.budget:
+                # Handle the case where the category and budget don't match
+                # You might want to display an error message or take appropriate action
+                return render(
+                    request,
+                    self.template_name,
+                    {
+                        "form": form,
+                        "error": "Category does not belong to the selected budget.",
+                    },
+                )
+
+            transaction.save()
+            return HttpResponseRedirect(reverse_lazy("user_home"))
+        return render(request, self.template_name, {"form": form})
+
+    """def get_success_url(self):
+        return reverse("user_home")"""
+
+
+class GetCategoriesView(View):
+    def get(self, request, *args, **kwargs):
+        form = CreateCategoryForm
+        budget_id = request.GET.get("budget_id")
+        categories = Category.objects.filter(budget_id=budget_id)
+        category_list = [
+            {"id": category.id, "form": form, "name": category.name}
+            for category in categories
+        ]
+        return JsonResponse(category_list, safe=False)
+
+
+class UserHomeView(ListView):
+    model = Budget
+    template_name = "user_home.html"
+
+    def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user)
+
+
+class BudgetGet(DetailView):
+    model = Budget
+    template_name = "budget_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        income = self.object.income_set.all()
+        if len(income) > 0:
+            context["income"] = self.object.income_set.all()[0]
+        else:
+            context["income"] = 0
+        categories = self.object.category_set.all().order_by("name")
+        total = 0
+        for category in categories:
+            transactions = Transaction.objects.filter(category=category)
+            amount = 0
+            for transaction in transactions:
+                amount += transaction.amount
+            if amount == 0:
+                category.amount_spent = Money(amount, "USD")
+            else:
+                category.amount_spent = amount
+            total += amount
+        if total == 0:
+            total = Money(total, "USD")
+        context["total_spent"] = total
+        context["categories"] = categories
+        return context
+
+
+class BudgetPost(SingleObjectMixin, FormView):
+    model = Budget
+    form_class = CreateCategoryForm
+    template_name = "budget_detail.html"
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        category = form.save(commit=False)
+        category.budget = self.object
+        category.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        budget = self.object
+        return reverse("budget", kwargs={"pk": budget.pk})
+
+
+class BudgetView(DetailView):
+    def get(self, request, *args, **kwargs):
+        view = BudgetGet.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = BudgetPost.as_view()
+        return view(request, *args, **kwargs)
+
+
+class CatagoryDetail(DetailView):
+    model = Category
+    template_name = "category_detail.html"
+
+
+class HomeView(TemplateView):
+    template_name = "home.html"
+
+
+class BudgetEditView(UpdateView):
+    model = Budget
+    fields = ("name",)
+    template_name = "budget_edit.html"
+
+
+class BudgetDeleteView(DeleteView):
+    model = Budget
+    template_name = "budget_delete.html"
+    success_url = reverse_lazy("user_home")
+
+
+class AddBudgetView(CreateView):
+    model = Budget
+    template_name = "add_budget.html"
+    fields = ("name",)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)

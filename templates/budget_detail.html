@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ object.name }}</h2>
+<p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
+<p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
+
+<h4>Monthly Income: {{ income }}</h4>
+{% for category in categories %}
+<h5>Category: {{ category.name }}</h5>
+<p>Amount Budgeted: {{ category.amount_budgeted }}</p>
+<p>Amount Spent: {{ category.amount_spent}}</p>
+{% endfor %}
+<h4>Total Spent: {{ total_spent }}</h4>
+
+<h4>Add Category</h4>
+<form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add</button>
+</form>
+{% endblock content %}
