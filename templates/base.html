@@ -110,7 +110,6 @@
 <body>
   <main>
     {% if user.is_authenticated %}
-    <a href="{% url 'add_transaction' %}">Add Transaction</a>
     {% endif %}
     {% block content %}
     {% endblock content %}
