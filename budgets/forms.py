@@ -1,5 +1,6 @@
 from django.forms import ModelForm
-from .models import Transaction, Budget, Category
+from djmoney.forms.fields import MoneyField
+from .models import Transaction, Budget, Category, Income
 
 
 class CreateTransactionForm(ModelForm):
@@ -28,3 +29,26 @@ class CreateCategoryForm(ModelForm):
             "name",
             "amount_budgeted",
         ]
+
+
+class CreateIncomeForm(ModelForm):
+    class Meta:
+        model = Income
+        fields = ["monthly_income"]
+
+    monthly_income = MoneyField(required=False)
+
+
+class UpdateTransactionForm(ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ["category", "amount"]  # Add other fields as needed
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Dynamically filter the choices for the category field
+        instance = kwargs.get("instance")
+        if instance:
+            budget = instance.category.budget
+            self.fields["category"].queryset = Category.objects.filter(budget=budget)

@@ -1,16 +1,17 @@
 from typing import Any
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView, View, TemplateView, FormView
 from django.urls import reverse_lazy, reverse
 from django.views.generic.detail import SingleObjectMixin
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import JsonResponse, HttpResponseRedirect
 from djmoney.money import Money
 from .models import Transaction, Budget, Income, Category
-from .forms import CreateTransactionForm, CreateCategoryForm
+from .forms import CreateTransactionForm, CreateCategoryForm, UpdateTransactionForm
 
 
-class AddTransactionView(View):
+class AddTransactionView(LoginRequiredMixin, View):
     template_name = "add_transaction.html"
 
     def get(self, request, *args, **kwargs):
@@ -37,23 +38,8 @@ class AddTransactionView(View):
             return HttpResponseRedirect(reverse_lazy("user_home"))
         return render(request, self.template_name, {"form": form})
 
-    """def get_success_url(self):
-        return reverse("user_home")"""
 
-
-"""class GetCategoriesView(View):
-    def get(self, request, *args, **kwargs):
-        form = CreateCategoryForm
-        budget_id = request.GET.get("budget_id")
-        categories = Category.objects.filter(budget_id=budget_id)
-        category_list = [
-            {"id": category.id, "form": form, "name": category.name}
-            for category in categories
-        ]
-        return JsonResponse(category_list, safe=False)"""
-
-
-class GetCategoriesView(View):
+class GetCategoriesView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         form = CreateCategoryForm()  # Instantiate the form
         budget_id = request.GET.get("budget_id")
@@ -64,12 +50,12 @@ class GetCategoriesView(View):
         return JsonResponse(category_list, safe=False)
 
 
-class UserHomeView(ListView):
+class UserHomeView(LoginRequiredMixin, ListView):
     model = Budget
     template_name = "user_home.html"
 
     def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user)
+        return Budget.objects.filter(user=self.request.user).order_by("-date")
 
 
 class BudgetGet(DetailView):
@@ -79,10 +65,8 @@ class BudgetGet(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         income = self.object.income_set.all()
-        if len(income) > 0:
-            context["income"] = self.object.income_set.all()[0]
-        else:
-            context["income"] = 0
+        print(income)
+        context["income"] = income[0]
         categories = self.object.category_set.all().order_by("name")
         total = 0
         for category in categories:
@@ -122,7 +106,7 @@ class BudgetPost(SingleObjectMixin, FormView):
         return reverse("budget", kwargs={"pk": budget.pk})
 
 
-class BudgetView(DetailView):
+class BudgetView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         view = BudgetGet.as_view()
         return view(request, *args, **kwargs)
@@ -132,32 +116,120 @@ class BudgetView(DetailView):
         return view(request, *args, **kwargs)
 
 
-class CatagoryDetail(DetailView):
+class CatagoryDetail(LoginRequiredMixin, DetailView):
     model = Category
     template_name = "category_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        transactions = self.object.transaction_set.all().order_by("date")
+        context["transactions"] = transactions
+        amount = 0
+        for transaction in transactions:
+            amount += transaction.amount
+
+        if amount == 0:
+            self.object.amount_spent = Money(amount, "USD")
+        else:
+            self.object.amount_spent = amount
+        return context
 
 
 class HomeView(TemplateView):
     template_name = "home.html"
 
 
-class BudgetEditView(UpdateView):
+class BudgetEditView(LoginRequiredMixin, UpdateView):
     model = Budget
     fields = ("name",)
     template_name = "budget_edit.html"
 
 
-class BudgetDeleteView(DeleteView):
+class BudgetDeleteView(LoginRequiredMixin, DeleteView):
     model = Budget
     template_name = "budget_delete.html"
     success_url = reverse_lazy("user_home")
 
 
-class AddBudgetView(CreateView):
+class AddBudgetView(LoginRequiredMixin, CreateView):
     model = Budget
     template_name = "add_budget.html"
     fields = ("name",)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        respone = super().form_valid(form)
+        income = Income.objects.create(
+            budget=form.instance,
+        )
+        # income.save()
+        """income_form = CreateIncomeForm(self.request.POST)
+        if income_form.is_valid():
+            income_form.budget = self.object
+            income_form.save()
+        else:
+            print(income_form.errors)"""
+        return respone
+
+
+class CategoryEditView(LoginRequiredMixin, UpdateView):
+    model = Category
+    fields = (
+        "name",
+        "amount_budgeted",
+    )
+    template_name = "category_edit.html"
+
+
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+    model = Category
+    template_name = "category_delete.html"
+
+    def get_success_url(self):
+        return reverse("budget", kwargs={"pk": self.object.budget_id})
+
+
+class SetIncome(LoginRequiredMixin, UpdateView):
+    model = Income
+    fields = ("monthly_income",)
+    template_name = "income_set.html"
+
+    def get_success_url(self):
+        return reverse("budget", kwargs={"pk": self.object.budget_id})
+
+
+class DeleteTransactionView(LoginRequiredMixin, DeleteView):
+    model = Transaction
+    template_name = "transaction_delete.html"
+
+    def get_success_url(self):
+        return reverse("category_detail", kwargs={"pk": self.object.category_id})
+
+
+class EditTransactionView(LoginRequiredMixin, UpdateView):
+    model = Transaction
+    form_class = UpdateTransactionForm
+    template_name = "transaction_edit.html"
+
+    def form_valid(self, form):
+        # Add custom logic if needed
         return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # Add any additional kwargs if needed
+        return kwargs
+
+    def get_success_url(self):
+        return reverse("category_detail", kwargs={"pk": self.object.category_id})
+
+
+class TransactionView(LoginRequiredMixin, DetailView):
+    model = Budget
+    template_name = "transactions.html"
+
+    def get_context_data(self, **kwargs: Any):
+        context = super().get_context_data(**kwargs)
+        transactions = self.object.transaction_set.all().order_by("merchant")
+        context["transactions"] = transactions
+        return context

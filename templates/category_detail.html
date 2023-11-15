@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>{{ object.name }}</p>
-<p>{{ object.amount_budgeted }}</p>
-{% endblock content %}
+<h2>{{ object.name }}</h2>
+<a href="{% url 'category_edit' category.pk %}">Edit Category</a>
+<a href="{% url 'category_delete' category.pk %}">Delete Category</a>
+<h4>Amount Budget: {{ object.amount_budgeted }}</h4>
+<h4>Amount Spent: {{ object.amount_spent }}</h4>
+<h4>Transactions</h4>
+{% for transaction in transactions %}
+<p>Merchant: {{ transaction.merchant }}</p>
+<p> Amount: {{ transaction.amount }}</p>
+<a href="{% url 'delete_transaction' transaction.pk %}">Delete Transaction</a>
+<a href="{% url 'edit_transaction' transaction.pk %}">Edit Transaction</a>
+{% endfor %} {% endblock content %}

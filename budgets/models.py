@@ -39,7 +39,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("catagory_detail", kwargs={"pk": self.pk})
+        return reverse("category_detail", kwargs={"pk": self.pk})
 
 
 class Transaction(models.Model):
@@ -69,10 +69,7 @@ class Income(models.Model):
         on_delete=models.CASCADE,
     )
     monthly_income = MoneyField(
-        max_digits=14,
-        decimal_places=2,
-        default_currency="USD",
-        null=True,
+        max_digits=14, decimal_places=2, default_currency="USD", null=True, default=0
     )
 
     def __str__(self):

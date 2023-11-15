@@ -5,17 +5,24 @@
 <p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
 <p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
 
-<h4>Monthly Income: {{ income }}</h4>
-{% for category in categories %}
-<h5>Category: {{ category.name }}</h5>
+{% if income %}
+<h4>Monthly Income: {{ income.monthly_income }}</h4>
+<a href="{% url 'set_income' income.pk %}">Set Income</a>
+{% else %}
+<p>No income data available.</p>
+{% endif %}
+
+{% for category in categories %} <h5>Category: <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
+</h5>
 <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
 <p>Amount Spent: {{ category.amount_spent}}</p>
 {% endfor %}
 <h4>Total Spent: {{ total_spent }}</h4>
 
-<h4>Add Category</h4>
+<a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
+
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Add</button>
+    <button type="submit">Add Category</button>
 </form>
 {% endblock content %}
