@@ -139,16 +139,24 @@ class HomeView(TemplateView):
     template_name = "home.html"
 
 
-class BudgetEditView(LoginRequiredMixin, UpdateView):
+class BudgetEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Budget
     fields = ("name",)
     template_name = "budget_edit.html"
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
-class BudgetDeleteView(LoginRequiredMixin, DeleteView):
+
+class BudgetDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Budget
     template_name = "budget_delete.html"
     success_url = reverse_lazy("user_home")
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
 
 class AddBudgetView(LoginRequiredMixin, CreateView):
@@ -162,17 +170,10 @@ class AddBudgetView(LoginRequiredMixin, CreateView):
         income = Income.objects.create(
             budget=form.instance,
         )
-        # income.save()
-        """income_form = CreateIncomeForm(self.request.POST)
-        if income_form.is_valid():
-            income_form.budget = self.object
-            income_form.save()
-        else:
-            print(income_form.errors)"""
         return respone
 
 
-class CategoryEditView(LoginRequiredMixin, UpdateView):
+class CategoryEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Category
     fields = (
         "name",
@@ -180,16 +181,24 @@ class CategoryEditView(LoginRequiredMixin, UpdateView):
     )
     template_name = "category_edit.html"
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
-class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+
+class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category
     template_name = "category_delete.html"
 
     def get_success_url(self):
         return reverse("budget", kwargs={"pk": self.object.budget_id})
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
-class SetIncome(LoginRequiredMixin, UpdateView):
+
+class SetIncome(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Income
     fields = ("monthly_income",)
     template_name = "income_set.html"
@@ -197,16 +206,24 @@ class SetIncome(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse("budget", kwargs={"pk": self.object.budget_id})
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
-class DeleteTransactionView(LoginRequiredMixin, DeleteView):
+
+class DeleteTransactionView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Transaction
     template_name = "transaction_delete.html"
 
     def get_success_url(self):
         return reverse("category_detail", kwargs={"pk": self.object.category_id})
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
-class EditTransactionView(LoginRequiredMixin, UpdateView):
+
+class EditTransactionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Transaction
     form_class = UpdateTransactionForm
     template_name = "transaction_edit.html"
@@ -222,6 +239,10 @@ class EditTransactionView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return reverse("category_detail", kwargs={"pk": self.object.category_id})
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
 
 class TransactionView(LoginRequiredMixin, DetailView):
