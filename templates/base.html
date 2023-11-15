@@ -14,7 +14,7 @@
     {% if user.is_authenticated %}
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'user_home' %}">
-        <img src="images/BudgifyLogo.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+        <img src="../images/79365.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
         Budgify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -49,10 +49,12 @@
           <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
           </li>
+          <input class="form-control me-2" type="search" placeholder="Find a budget" aria-label="Search">
         </ul>
         <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <button class="btn btn-outline-success" type="submit">
+            <a href="{% url 'add_transaction' %}" style="color:inherit">Add Transaction</a>
+          </button>
         </form>
       </div>
     </div>
@@ -108,7 +110,6 @@
 <body>
   <main>
     {% if user.is_authenticated %}
-    <a href="{% url 'add_transaction' %}">Add Transaction</a>
     {% endif %}
     {% block content %}
     {% endblock content %}
