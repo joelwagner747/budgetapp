@@ -55,7 +55,31 @@ class UserHomeView(LoginRequiredMixin, ListView):
     template_name = "user_home.html"
 
     def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user).order_by("-date")
+        budgets = Budget.objects.filter(user=self.request.user).order_by("-date")
+        for budget in budgets:
+            income = budget.income_set.all()
+            budget.income = income[0]
+            categories = budget.category_set.all().order_by("name")
+            total = 0
+            for category in categories:
+                transactions = Transaction.objects.filter(category=category)
+                amount = 0
+                for transaction in transactions:
+                    amount += transaction.amount
+                if amount == 0:
+                    category.amount_spent = Money(amount, "USD")
+                else:
+                    category.amount_spent = amount
+                total += amount
+            if total == 0:
+                total = Money(total, "USD")
+            budget.categories = categories
+            budget.total = total
+
+        return budgets
+
+    """def get_queryset(self):
+        return Budget.objects.filter(user=self.request.user).order_by("-date")"""
 
 
 class BudgetGet(DetailView):
