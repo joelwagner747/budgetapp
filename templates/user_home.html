@@ -1,8 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% for budget in budget_list %}
-<p><a href="{{ budget.get_absolute_url }}">{{ budget.name }}</a></p>
-{% endfor %}
-<p><a href="{% url 'add_budget' %}">Add Budget</a></p>
+    <main>
+        <h1>{{ user.username }}'s Budgets</h1>
+        {% for budget in budget_list %}
+            <div class="containerBudget">
+                <h2>{{ budget.name }}</h2>
+                <p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
+                <p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
+            
+                {% if income %}
+                <h4>Monthly Income: {{ income.monthly_income }}</h4>
+                <a href="{% url 'set_income' income.pk %}">Set Income</a>
+                {% else %}
+                <p>No income data available.</p>
+                {% endif %}
+            
+                {% for category in categories %} <h5>Category: <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
+                </h5>
+                <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
+                <p>Amount Spent: {{ category.amount_spent}}</p>
+                {% endfor %}
+                <h4>Total Spent: {{ total_spent }}</h4>
+            
+                <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
+            
+                <form action="" method="post">{% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Add Category</button>
+                </form>
+            </div>
+        {% endfor %}
+        <button class="btn btn-success bottom-left-button" type="submit">
+            <a href="{% url 'add_budget' %}" style="color:inherit">Add Budget</a>
+        </button>
+
+    </main>
 {% endblock content %}

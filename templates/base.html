@@ -9,12 +9,13 @@
   <!--Bootstrap-->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="./static/css/style.css">
   <title>{% block title %}Budgify{% endblock title %}</title>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     {% if user.is_authenticated %}
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'user_home' %}">
-        <img src="../images/79365.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+        <img src="{% static '/images/79365.png' %}" alt="logo-image" width="30" height="30" class="d-inline-block align-text-top">
         Budgify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -52,7 +53,7 @@
           <input class="form-control me-2" type="search" placeholder="Find a budget" aria-label="Search">
         </ul>
         <form class="d-flex">
-          <button class="btn btn-outline-success" type="submit">
+          <button class="btn btn-success" type="submit">
             <a href="{% url 'add_transaction' %}" style="color:inherit">Add Transaction</a>
           </button>
         </form>
@@ -109,10 +110,12 @@
 
 <body>
   <main>
-    {% if user.is_authenticated %}
-    {% endif %}
-    {% block content %}
-    {% endblock content %}
+    <div class="page">
+      {% if user.is_authenticated %}
+      {% endif %}
+      {% block content %}
+      {% endblock content %}
+    </div>
   </main>
   <!--Bootstrap-->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
