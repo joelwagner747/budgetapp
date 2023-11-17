@@ -78,11 +78,8 @@ class UserHomeView(LoginRequiredMixin, ListView):
 
         return budgets
 
-    """def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user).order_by("-date")"""
 
-
-class BudgetGet(DetailView):
+class BudgetGet(UserPassesTestMixin, DetailView):
     model = Budget
     template_name = "budget_detail.html"
 
@@ -109,8 +106,12 @@ class BudgetGet(DetailView):
         context["categories"] = categories
         return context
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
-class BudgetPost(SingleObjectMixin, FormView):
+
+class BudgetPost(UserPassesTestMixin, SingleObjectMixin, FormView):
     model = Budget
     form_class = CreateCategoryForm
     template_name = "budget_detail.html"
@@ -129,6 +130,10 @@ class BudgetPost(SingleObjectMixin, FormView):
         budget = self.object
         return reverse("budget", kwargs={"pk": budget.pk})
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
 
 class BudgetView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
@@ -139,8 +144,12 @@ class BudgetView(LoginRequiredMixin, DetailView):
         view = BudgetPost.as_view()
         return view(request, *args, **kwargs)
 
+    """def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user"""
 
-class CatagoryDetail(LoginRequiredMixin, DetailView):
+
+class CatagoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Category
     template_name = "category_detail.html"
 
@@ -157,6 +166,10 @@ class CatagoryDetail(LoginRequiredMixin, DetailView):
         else:
             self.object.amount_spent = amount
         return context
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
 
 class HomeView(TemplateView):
@@ -269,7 +282,7 @@ class EditTransactionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return obj.budget.user == self.request.user
 
 
-class TransactionView(LoginRequiredMixin, DetailView):
+class TransactionView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Budget
     template_name = "transactions.html"
 
@@ -278,3 +291,7 @@ class TransactionView(LoginRequiredMixin, DetailView):
         transactions = self.object.transaction_set.all().order_by("merchant")
         context["transactions"] = transactions
         return context
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
