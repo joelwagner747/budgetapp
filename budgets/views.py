@@ -305,7 +305,6 @@ class SearchResultsView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         query = self.request.GET.get("q")
         if query:
-            print("Query was true")
             budgets = Budget.objects.filter(user=self.request.user).filter(
                 name__icontains=query
             )
@@ -330,7 +329,6 @@ class SearchResultsView(LoginRequiredMixin, ListView):
                 budget.total = total
             return budgets
         else:
-            print("query was false")
             budgets = Budget.objects.filter(user=self.request.user).order_by("-date")
             for budget in budgets:
                 income = budget.income_set.all()
