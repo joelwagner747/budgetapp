@@ -1,4 +1,5 @@
 from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView, View, TemplateView, FormView
@@ -295,3 +296,59 @@ class TransactionView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def test_func(self):
         obj = self.get_object()
         return obj.user == self.request.user
+
+
+class SearchResultsView(LoginRequiredMixin, ListView):
+    model = Budget
+    template_name = "search_results.html"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            print("Query was true")
+            budgets = Budget.objects.filter(user=self.request.user).filter(
+                name__icontains=query
+            )
+            for budget in budgets:
+                income = budget.income_set.all()
+                budget.income = income[0]
+                categories = budget.category_set.all().order_by("name")
+                total = 0
+                for category in categories:
+                    transactions = Transaction.objects.filter(category=category)
+                    amount = 0
+                    for transaction in transactions:
+                        amount += transaction.amount
+                    if amount == 0:
+                        category.amount_spent = Money(amount, "USD")
+                    else:
+                        category.amount_spent = amount
+                    total += amount
+                if total == 0:
+                    total = Money(total, "USD")
+                budget.categories = categories
+                budget.total = total
+            return budgets
+        else:
+            print("query was false")
+            budgets = Budget.objects.filter(user=self.request.user).order_by("-date")
+            for budget in budgets:
+                income = budget.income_set.all()
+                budget.income = income[0]
+                categories = budget.category_set.all().order_by("name")
+                total = 0
+                for category in categories:
+                    transactions = Transaction.objects.filter(category=category)
+                    amount = 0
+                    for transaction in transactions:
+                        amount += transaction.amount
+                    if amount == 0:
+                        category.amount_spent = Money(amount, "USD")
+                    else:
+                        category.amount_spent = amount
+                    total += amount
+                if total == 0:
+                    total = Money(total, "USD")
+                budget.categories = categories
+                budget.total = total
+                return budgets

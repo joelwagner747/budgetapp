@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Your searched Results</h1>
+{% if budget_list %}
+{% for budget in budget_list %}
+<div class="containerBudget">
+    <h2><a href="{% url 'budget' budget.pk %}">{{ budget.name }}</a></h2>
+
+    {% if budget.income %}
+    <h4>Monthly Income: {{ budget.income.monthly_income }}</h4>
+    {% else %}
+    <p>No income data available.</p>
+    {% endif %}
+
+    {% for category in budget.categories %}
+    <h5>Category: {{ category.name }}
+        </a></h5>
+    <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
+    <p>Amount Spent: {{ category.amount_spent}}</p>
+    {% endfor %}
+    <h4>Total Spent: {{ budget.total }}</h4>
+</div>
+{% endfor %}
+{% else %}
+<h2>Your search could not find any results try searching again with a different keyword.</h2>
+{% endif %}
+
+{% endblock content %}
