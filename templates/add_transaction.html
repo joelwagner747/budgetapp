@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-<h1>Add new Trasaction</h1>
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    input {
+        max-width: 40em;
+    }
+</style>
+<div class="form-container">
+    <form method="post">
+        <h1>Add a new Transaction</h1>
+        {% csrf_token %}
 
-<form method="post">
-    {% csrf_token %}
+        {{ form|crispy }}
 
-    {{ form|crispy }}
-
-    <button class="btn btn-success" type="submit">Add Expense</button>
-</form>
+        <button class="btn btn-success" type="submit">Add Expense</button>
+    </form>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     $(document).ready(function () {

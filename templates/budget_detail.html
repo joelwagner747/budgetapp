@@ -1,6 +1,17 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    input {
+        max-width: 40em;
+    }
+</style>
 <h2>{{ object.name }}</h2>
 <p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
 <p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
@@ -22,7 +33,7 @@
 <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
 
 <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Category</button>
+    {{ form|crispy }}
+    <button class="btn btn-success" type="submit">Add Category</button>
 </form>
 {% endblock content %}
