@@ -135,6 +135,29 @@ class BudgetPost(UserPassesTestMixin, SingleObjectMixin, FormView):
         obj = self.get_object()
         return obj.user == self.request.user
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        income = self.object.income_set.all()
+        print(income)
+        context["income"] = income[0]
+        categories = self.object.category_set.all().order_by("name")
+        total = 0
+        for category in categories:
+            transactions = Transaction.objects.filter(category=category)
+            amount = 0
+            for transaction in transactions:
+                amount += transaction.amount
+            if amount == 0:
+                category.amount_spent = Money(amount, "USD")
+            else:
+                category.amount_spent = amount
+            total += amount
+        if total == 0:
+            total = Money(total, "USD")
+        context["total_spent"] = total
+        context["categories"] = categories
+        return context
+
 
 class BudgetView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
