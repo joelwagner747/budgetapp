@@ -8,6 +8,7 @@
         align-items: center;
         height: 100vh;
     }
+
     input {
         max-width: 40em;
     }
@@ -16,7 +17,6 @@
     <form method="post">
         <h1>Add a new Transaction</h1>
         {% csrf_token %}
-<h1>Add new Transaction</h1>
 
         {{ form|crispy }}
 
