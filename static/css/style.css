@@ -10,6 +10,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
+    padding: 10px;
   }
 
   .containerBudget {
@@ -22,10 +23,10 @@
     flex-wrap: wrap; 
     text-align:left;
     color:aliceblue;
-    border-radius: 15px;
+    border-radius: 20px;
     border-color: rgb(21,115,71);
     background-color:rgb(33,37,41);
-    border-width: 3px;
+    border-width: 2px;
     width: 50%;
     overflow: auto;
 }
@@ -33,7 +34,7 @@
 .btn-large {
   font-size: larger;
   padding: 15px;
-  border-color:aliceblue;
+  border-color:darkgreen;
   width: 15%;
   border-width: 2px;
   border-radius: 15px;

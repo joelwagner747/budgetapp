@@ -4,36 +4,48 @@
 <style>
     .form-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        color: aliceblue;
+        border-radius: 20px;
+        border-color: rgb(21,115,71);
+        background-color: rgb(33,37,41);
+        border-width: 2px;
+        width: 50%;
+        padding: 20px;
     }
     input {
         max-width: 40em;
     }
+    .containerBudget {
+        justify-content: center;
+        align-items: center;
+
+    }
 </style>
-<h2>{{ object.name }}</h2>
-<p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
-<p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
-
-{% if income %}
-<h4>Monthly Income: {{ income.monthly_income }}</h4>
-<a href="{% url 'set_income' income.pk %}">Set Income</a>
-{% else %}
-<p>No income data available.</p>
-{% endif %}
-
-{% for category in categories %} <h5>Category: <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
-</h5>
-<p>Amount Budgeted: {{ category.amount_budgeted }}</p>
-<p>Amount Spent: {{ category.amount_spent}}</p>
-{% endfor %}
-<h4>Total Spent: {{ total_spent }}</h4>
-
-<a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
-
-<form action="" method="post">{% csrf_token %}
-    {{ form|crispy }}
-    <button class="btn btn-success" type="submit">Add Category</button>
-</form>
+<div class="page">
+    <div class="containerBudget">
+        <h2>{{ object.name }}</h2>
+        <p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
+        <p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
+        {% if income %}
+        <h4>Monthly Income: {{ income.monthly_income }}</h4>
+        <a href="{% url 'set_income' income.pk %}">Set Income</a>
+        {% else %}
+        <p>No income data available.</p>
+        {% endif %}
+        {% for category in categories %} <h5>Category: <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
+        </h5>
+        <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
+        <p>Amount Spent: {{ category.amount_spent}}</p>
+        {% endfor %}
+        <h4>Total Spent: {{ total_spent }}</h4>
+        <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
+        <form action="" method="post">{% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-success" type="submit">Add Category</button>
+        </form>
+    </div>
+</div>
 {% endblock content %}
