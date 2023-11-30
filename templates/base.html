@@ -19,7 +19,8 @@
     {% if user.is_authenticated %}
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'user_home' %}">
-        <img src="{% static '/images/79365.png' %}" alt="logo-image" width="30" height="30" class="d-inline-block align-text-top">
+        <img src="{% static '/images/79365.png' %}" alt="logo-image" width="30" height="30"
+          class="d-inline-block align-text-top">
         Budgify
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -54,7 +55,9 @@
           <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
           </li>
-          <input class="form-control me-2" type="search" placeholder="Find a budget" aria-label="Search">
+          <form method="get" action="{% url 'search_results' %}">
+            <input class="form-control me-2" name="q" type="search" placeholder="Find a budget" aria-label="Search">
+          </form>
         </ul>
         <form class="d-flex">
           <button class="btn btn-success" type="submit">
