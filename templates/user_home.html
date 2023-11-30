@@ -29,9 +29,6 @@
         <p>Amount Spent: {{ category.amount_spent}}</p>
         {% endfor %}
         <h4>Total Spent: {{ budget.total }}</h4>
-
-        <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
-
     </div>
     {% endfor %}
     <button class="btn btn-success bottom-left-button btn-large" type="submit">
