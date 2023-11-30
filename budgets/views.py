@@ -1,4 +1,5 @@
 from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView, View, TemplateView, FormView
@@ -78,11 +79,8 @@ class UserHomeView(LoginRequiredMixin, ListView):
 
         return budgets
 
-    """def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user).order_by("-date")"""
 
-
-class BudgetGet(DetailView):
+class BudgetGet(UserPassesTestMixin, DetailView):
     model = Budget
     template_name = "budget_detail.html"
 
@@ -109,8 +107,12 @@ class BudgetGet(DetailView):
         context["categories"] = categories
         return context
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
-class BudgetPost(SingleObjectMixin, FormView):
+
+class BudgetPost(UserPassesTestMixin, SingleObjectMixin, FormView):
     model = Budget
     form_class = CreateCategoryForm
     template_name = "budget_detail.html"
@@ -129,6 +131,33 @@ class BudgetPost(SingleObjectMixin, FormView):
         budget = self.object
         return reverse("budget", kwargs={"pk": budget.pk})
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        income = self.object.income_set.all()
+        print(income)
+        context["income"] = income[0]
+        categories = self.object.category_set.all().order_by("name")
+        total = 0
+        for category in categories:
+            transactions = Transaction.objects.filter(category=category)
+            amount = 0
+            for transaction in transactions:
+                amount += transaction.amount
+            if amount == 0:
+                category.amount_spent = Money(amount, "USD")
+            else:
+                category.amount_spent = amount
+            total += amount
+        if total == 0:
+            total = Money(total, "USD")
+        context["total_spent"] = total
+        context["categories"] = categories
+        return context
+
 
 class BudgetView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
@@ -139,8 +168,12 @@ class BudgetView(LoginRequiredMixin, DetailView):
         view = BudgetPost.as_view()
         return view(request, *args, **kwargs)
 
+    """def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user"""
 
-class CatagoryDetail(LoginRequiredMixin, DetailView):
+
+class CatagoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Category
     template_name = "category_detail.html"
 
@@ -157,6 +190,10 @@ class CatagoryDetail(LoginRequiredMixin, DetailView):
         else:
             self.object.amount_spent = amount
         return context
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.budget.user == self.request.user
 
 
 class HomeView(TemplateView):
@@ -269,7 +306,7 @@ class EditTransactionView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return obj.budget.user == self.request.user
 
 
-class TransactionView(LoginRequiredMixin, DetailView):
+class TransactionView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Budget
     template_name = "transactions.html"
 
@@ -278,3 +315,61 @@ class TransactionView(LoginRequiredMixin, DetailView):
         transactions = self.object.transaction_set.all().order_by("merchant")
         context["transactions"] = transactions
         return context
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
+
+class SearchResultsView(LoginRequiredMixin, ListView):
+    model = Budget
+    template_name = "search_results.html"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            budgets = Budget.objects.filter(user=self.request.user).filter(
+                name__icontains=query
+            )
+            for budget in budgets:
+                income = budget.income_set.all()
+                budget.income = income[0]
+                categories = budget.category_set.all().order_by("name")
+                total = 0
+                for category in categories:
+                    transactions = Transaction.objects.filter(category=category)
+                    amount = 0
+                    for transaction in transactions:
+                        amount += transaction.amount
+                    if amount == 0:
+                        category.amount_spent = Money(amount, "USD")
+                    else:
+                        category.amount_spent = amount
+                    total += amount
+                if total == 0:
+                    total = Money(total, "USD")
+                budget.categories = categories
+                budget.total = total
+            return budgets
+        else:
+            budgets = Budget.objects.filter(user=self.request.user).order_by("-date")
+            for budget in budgets:
+                income = budget.income_set.all()
+                budget.income = income[0]
+                categories = budget.category_set.all().order_by("name")
+                total = 0
+                for category in categories:
+                    transactions = Transaction.objects.filter(category=category)
+                    amount = 0
+                    for transaction in transactions:
+                        amount += transaction.amount
+                    if amount == 0:
+                        category.amount_spent = Money(amount, "USD")
+                    else:
+                        category.amount_spent = amount
+                    total += amount
+                if total == 0:
+                    total = Money(total, "USD")
+                budget.categories = categories
+                budget.total = total
+                return budgets

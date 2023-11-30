@@ -15,6 +15,7 @@ from .views import (
     DeleteTransactionView,
     EditTransactionView,
     TransactionView,
+    SearchResultsView,
 )
 
 urlpatterns = [
@@ -47,4 +48,5 @@ urlpatterns = [
     path(
         "<int:pk>/transactions/", TransactionView.as_view(), name="budget_transactions"
     ),
+    path("search/", SearchResultsView.as_view(), name="search_results"),
 ]
