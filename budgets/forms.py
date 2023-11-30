@@ -42,7 +42,7 @@ class CreateIncomeForm(ModelForm):
 class UpdateTransactionForm(ModelForm):
     class Meta:
         model = Transaction
-        fields = ["category", "amount"]  # Add other fields as needed
+        fields = ["merchant", "category", "amount"]  # Add other fields as needed
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

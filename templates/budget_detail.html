@@ -17,6 +17,10 @@
 <p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
 <p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
 
+{% if over_budgeted %}
+<div class="warning-box">Your budget is {{ over_budgeted }} over your income</div>
+{% endif %}
+
 {% if income %}
 <h4>Monthly Income: {{ income.monthly_income }}</h4>
 <a href="{% url 'set_income' income.pk %}">Set Income</a>
@@ -34,6 +38,11 @@
 <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
 
 <form action="" method="post">{% csrf_token %}
+    <style type="text/css">
+        #id_amount_budgeted_1 {
+            display: none;
+        }
+    </style>
     {{ form|crispy }}
     <button class="btn btn-success" type="submit">Add Category</button>
 </form>

@@ -8,12 +8,18 @@
         align-items: center;
         height: 100vh;
     }
+
     input {
         max-width: 40em;
     }
 </style>
 <div class="form-container">
     <form method="post">{% csrf_token %}
+        <style type="text/css">
+            #id_amount_1 {
+                display: none;
+            }
+        </style>
         {{ form|crispy }}
         <button class="btn btn-success" type="submit">Update</button>
     </form>

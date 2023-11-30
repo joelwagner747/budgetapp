@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<p><a href="{% url 'budget' object.budget.pk %}">Back to {{ object.budget.name }}</a></p>
 <h2>{{ object.name }}</h2>
 <a href="{% url 'category_edit' category.pk %}">Edit Category</a>
 <a href="{% url 'category_delete' category.pk %}">Delete Category</a>

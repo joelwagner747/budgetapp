@@ -55,5 +55,21 @@ body {
 }
 
 .content-wrapper {
-  margin-top: 3rem;
+  margin-top: 5rem;
+}
+
+.warning-box {
+  background-color: #ffcccc;
+  /* Light red background color */
+  border: 1px solid #ff0000;
+  /* Red border */
+  color: #ff0000;
+  /* Red text color */
+  padding: 10px;
+  /* Padding around the content */
+  margin-bottom: 10px;
+  /* Optional margin at the bottom */
+  border-radius: 5px;
+  /* Optional: Rounded corners */
+  display: inline-block;
 }

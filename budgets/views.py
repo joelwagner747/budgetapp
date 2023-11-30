@@ -87,11 +87,12 @@ class BudgetGet(UserPassesTestMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         income = self.object.income_set.all()
-        print(income)
         context["income"] = income[0]
         categories = self.object.category_set.all().order_by("name")
         total = 0
+        amount_budgeted = 0
         for category in categories:
+            amount_budgeted += category.amount_budgeted
             transactions = Transaction.objects.filter(category=category)
             amount = 0
             for transaction in transactions:
@@ -103,6 +104,11 @@ class BudgetGet(UserPassesTestMixin, DetailView):
             total += amount
         if total == 0:
             total = Money(total, "USD")
+        if amount_budgeted == 0:
+            amount_budgeted = Money(amount_budgeted, "USD")
+        if amount_budgeted > income[0].monthly_income:
+            context["over_budgeted"] = amount_budgeted - income[0].monthly_income
+        context["amount_budgeted"] = amount_budgeted
         context["total_spent"] = total
         context["categories"] = categories
         return context
@@ -138,11 +144,12 @@ class BudgetPost(UserPassesTestMixin, SingleObjectMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         income = self.object.income_set.all()
-        print(income)
         context["income"] = income[0]
         categories = self.object.category_set.all().order_by("name")
         total = 0
+        amount_budgeted = 0
         for category in categories:
+            amount_budgeted += category.amount_budgeted
             transactions = Transaction.objects.filter(category=category)
             amount = 0
             for transaction in transactions:
@@ -154,6 +161,11 @@ class BudgetPost(UserPassesTestMixin, SingleObjectMixin, FormView):
             total += amount
         if total == 0:
             total = Money(total, "USD")
+        if amount_budgeted == 0:
+            amount_budgeted = Money(amount_budgeted, "USD")
+        if amount_budgeted > income[0].monthly_income:
+            context["over_budgeted"] = amount_budgeted - income[0].monthly_income
+        context["amount_budgeted"] = amount_budgeted
         context["total_spent"] = total
         context["categories"] = categories
         return context
@@ -167,10 +179,6 @@ class BudgetView(LoginRequiredMixin, DetailView):
     def post(self, request, *args, **kwargs):
         view = BudgetPost.as_view()
         return view(request, *args, **kwargs)
-
-    """def test_func(self):
-        obj = self.get_object()
-        return obj.user == self.request.user"""
 
 
 class CatagoryDetail(LoginRequiredMixin, UserPassesTestMixin, DetailView):

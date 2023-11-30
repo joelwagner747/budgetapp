@@ -17,6 +17,11 @@
     <form method="post">
         <h1>Add a new Transaction</h1>
         {% csrf_token %}
+        <style type="text/css">
+            #id_amount_1 {
+                display: none;
+            }
+        </style>
 
         {{ form|crispy }}
 

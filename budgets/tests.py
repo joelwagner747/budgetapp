@@ -70,6 +70,6 @@ class BudgetTests(TestCase):
             data={"name": "Test Category1", "amount_budgeted": 100.0},
         )
         print(Category.objects.all())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         # self.assertEqual(Category.objects.last().name, "Test Category1")
         # self.assertEqual(Category.objects.last().amount_budgeted, Money(100, "USD"))
