@@ -1,8 +1,19 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block content %}
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    input {
+        max-width: 40em;
+    }
+</style>
 <form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Set</button>
+    {{ form|crispy }}
+    <button class="btn btn-success" type="submit">Set</button>
 </form>
 {% endblock content %}
