@@ -73,3 +73,17 @@ body {
   /* Optional: Rounded corners */
   display: inline-block;
 }
+
+.custom-btn {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+hr.solid {
+  border-top: 3px solid #bbb;
+}
+
+hr.rounded {
+  border-top: 8px solid #bbb;
+  border-radius: 5px;
+}

@@ -13,37 +13,56 @@
         max-width: 40em;
     }
 </style>
-<h2>{{ object.name }}</h2>
-<p><a href="{% url 'budget_edit' budget.pk %}">Edit</a></p>
-<p><a href="{% url 'budget_delete' budget.pk %}">Delete</a></p>
+<div class="containerBudget">
+    <div class="dropdown float-right dropdown-container">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Budget Options
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="{% url 'budget' budget.pk %}">View Budget</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'set_income' income.pk %}">Set Income</a>
+          <a class="dropdown-item" href="{% url 'budget_edit' budget.pk %}">Edit Budget Name</a>
+          <a class="dropdown-item" href="{% url 'budget_delete' budget.pk %}">Delete Budget</a>
+          <a class="dropdown-item" href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
+        </div>
+      </div>
+    <h2>{{ object.name }}</h2>
+    <hr class="rounded">
+    </br>
 
-{% if over_budgeted %}
-<div class="warning-box">Your budget is {{ over_budgeted }} over your income</div>
-{% endif %}
+    {% if over_budgeted %}
+    <div class="warning-box">Your budget is {{ over_budgeted }} over your income</div>
+    <hr class="solid">
+    {% endif %}
 
-{% if income %}
-<h4>Monthly Income: {{ income.monthly_income }}</h4>
-<a href="{% url 'set_income' income.pk %}">Set Income</a>
-{% else %}
-<p>No income data available.</p>
-{% endif %}
+    {% if income %}
+    <h4>Monthly Income: {{ income.monthly_income }}</h4>
+    <hr class="solid">
+    
+    {% else %}
+    <p>No income data available.</p>
+    {% endif %}
 
-{% for category in categories %} <h5>Category: <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
-</h5>
-<p>Amount Budgeted: {{ category.amount_budgeted }}</p>
-<p>Amount Spent: {{ category.amount_spent}}</p>
-{% endfor %}
-<h4>Total Spent: {{ total_spent }}</h4>
+    {% for category in categories %}
+    <h5>Category: {{ category.name }}</h5>
+    <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
+    <p>Amount Spent: {{ category.amount_spent}}</p>
+    <a href="{% url 'category_detail' category.pk %}" class="btn btn-success btn-sm" style="color:inherit; padding-left: 10px; padding-right: 10px;">View Details</a>
+    {% endfor %}
+    <hr class="solid">
+    <h4>Total Spent: {{ total_spent }}</h4>
 
-<a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
+    <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
 
-<form action="" method="post">{% csrf_token %}
-    <style type="text/css">
-        #id_amount_budgeted_1 {
-            display: none;
-        }
-    </style>
-    {{ form|crispy }}
-    <button class="btn btn-success" type="submit">Add Category</button>
-</form>
+    <form action="" method="post">{% csrf_token %}
+        <style type="text/css">
+            #id_amount_budgeted_1 {
+                display: none;
+            }
+        </style>
+        {{ form|crispy }}
+        <button class="btn btn-success" type="submit">Add Category</button>
+    </form>
+</div>
 {% endblock content %}
