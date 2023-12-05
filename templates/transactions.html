@@ -1,20 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="{% url 'budget' budget.pk %}" class="btn btn-success btn-sm" style="color:inherit; padding-left: 10px; padding-right: 10px;">Back to {{ budget.name }}</a>
+<a href="{% url 'budget' budget.pk %}" class="btn btn-success btn-sm"
+    style="color:inherit; padding-left: 10px; padding-right: 10px;">Back to {{ budget.name }}</a>
+<h2>Transactions</h2>
+<hr class="solid">
+{% for transaction in transactions %}
 <div class="containerBudget">
-    <h2>Transactions</h2>
-    <hr class="solid">
-    {% for transaction in transactions %}
     <h4>Transaction</h4>
     <p>Merchant: {{ transaction.merchant }}</p>
     <p>Amount: {{ transaction.amount }}</p>
     <p>Budget: {{ transaction.budget }}</p>
     <p>Category: {{ transaction.category }}</p>
     <p>Date: {{ transaction.date }}</p>
-    <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-success btn-sm" style="color:inherit; padding-left: 10px; padding-right: 10px;">Delete Transaction</a>
+    <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-success btn-sm"
+        style="color:inherit; padding-left: 10px; padding-right: 10px;">Delete Transaction</a>
     </br>
-    <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-success btn-sm" style="color:inherit; padding-left: 10px; padding-right: 10px;">Edit Transaction</a>
+    <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-success btn-sm"
+        style="color:inherit; padding-left: 10px; padding-right: 10px;">Edit Transaction</a>
     <hr class="solid">
 </div>
 {% endfor %}
