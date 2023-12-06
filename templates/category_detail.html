@@ -1,16 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p><a href="{% url 'budget' object.budget.pk %}">Back to {{ object.budget.name }}</a></p>
-<h2>{{ object.name }}</h2>
-<a href="{% url 'category_edit' category.pk %}">Edit Category</a>
-<a href="{% url 'category_delete' category.pk %}">Delete Category</a>
-<h4>Amount Budget: {{ object.amount_budgeted }}</h4>
-<h4>Amount Spent: {{ object.amount_spent }}</h4>
-<h4>Transactions</h4>
-{% for transaction in transactions %}
-<p>Merchant: {{ transaction.merchant }}</p>
-<p> Amount: {{ transaction.amount }}</p>
-<a href="{% url 'delete_transaction' transaction.pk %}">Delete Transaction</a>
-<a href="{% url 'edit_transaction' transaction.pk %}">Edit Transaction</a>
-{% endfor %} {% endblock content %}
+<a href="{% url 'budget' object.budget.pk %}" class="btn btn-success btn-sm"
+    style="color:inherit; padding-left: 10px; padding-right: 10px;">Back to {{ object.budget.name }}</a>
+<div class="containerBudget">
+    <div class="dropdown float-right dropdown-container">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Category Options
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{% url 'category_detail' category.pk %}">View Category</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'category_edit' category.pk %}">Edit Category</a>
+            <a class="dropdown-item" href="{% url 'category_delete' category.pk %}">Delete Category</a>
+        </div>
+    </div>
+    <h2>{{ object.name }}</h2>
+    <hr class="rounded">
+    </br>
+    <div class="container-amount">
+        <h4>Amount Budgeted:</h4>
+        <div class="item-container-amount">
+            <h4>{{ object.amount_budgeted }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+    <div class="container-amount">
+        <h4>Amount Spent:</h4>
+        <div class="item-container-amount">
+            <h4>{{ object.amount_spent }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+    </br>
+    <h4>Transactions</h4>
+    <hr class="rounded">
+    {% for transaction in transactions %}
+    <div class="containerBudget">
+        <div class="container-amount">
+            <h6>Merchant:</h6>
+            <div class="item-container-amount">
+                <h6>{{ transaction.merchant }}</h6>
+            </div>
+        </div>
+        <hr class="solid">
+        <div class="container-amount">
+            <h6>Amount:</h6>
+            <div class="item-container-amount">
+                <h6>{{ transaction.amount }}</h6>
+            </div>
+        </div>
+        <hr class="solid">
+        <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-success btn-sm"
+            style="color:inherit; padding-left: 10px; padding-right: 10px;">Delete Transaction</a>
+        </br>
+        <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-success btn-sm"
+            style="color:inherit; padding-left: 10px; padding-right: 10px;">Edit Transaction</a>
+        <hr class="solid">
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

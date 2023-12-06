@@ -7,12 +7,41 @@
 <hr class="solid">
 {% for transaction in transactions %}
 <div class="containerBudget">
-    <h4>Transaction</h4>
-    <p>Merchant: {{ transaction.merchant }}</p>
-    <p>Amount: {{ transaction.amount }}</p>
-    <p>Budget: {{ transaction.budget }}</p>
-    <p>Category: {{ transaction.category }}</p>
-    <p>Date: {{ transaction.date }}</p>
+    <div class="container-amount">
+        <h4>Merchant:</h4>
+        <div class="item-container-amount">
+            <h4>{{ transaction.merchant }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+    <div class="container-amount">
+        <h4>Amount:</h4>
+        <div class="item-container-amount">
+            <h4>{{ transaction.amount }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+    <div class="container-amount">
+        <h4>Budget:</h4>
+        <div class="item-container-amount">
+            <h4>{{ transaction.budget }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+    <div class="container-amount">
+        <h4>Category:</h4>
+        <div class="item-container-amount">
+            <h4>{{ transaction.category }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+    <div class="container-amount">
+        <h4>Date:</h4>
+        <div class="item-container-amount">
+            <h4>{{ transaction.date }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
     <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-success btn-sm"
         style="color:inherit; padding-left: 10px; padding-right: 10px;">Delete Transaction</a>
     </br>

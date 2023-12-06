@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <main>
-  <h1>{{ user.username }}'s Budgets</h1>
+  <h1 class="indented-heading">{{ user.username }}'s Budgets</h1>
   {% for budget in budget_list %}
   <div class="containerBudget">
     <div class="dropdown float-right dropdown-container">
@@ -13,9 +13,9 @@
       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="{% url 'budget' budget.pk %}">View Budget</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{% url 'budget' budget.pk %}">Add Catagory</a>
         <a class="dropdown-item" href="{% url 'budget_edit' budget.pk %}">Edit Budget Name</a>
         <a class="dropdown-item" href="{% url 'budget_delete' budget.pk %}">Delete Budget</a>
+        <a class="dropdown-item" href="{% url 'budget_transactions' budget.pk %}">View Transactions</a>
       </div>
     </div>
     <h2>{{ budget.name }}</h2>

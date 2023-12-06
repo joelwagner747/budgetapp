@@ -104,3 +104,23 @@ hr.rounded {
   display: inline-block;
   /* Make the box only as wide as the text */
 }
+
+.indented-heading {
+  margin-left: 20px;
+}
+
+.container-amount {
+  display: flex;
+  align-items: center;
+}
+
+/* Style for the items */
+.item-container-amount {
+  display: flex;
+  margin-left: auto;
+  /* Optional: Add space between the heading and the items */
+}
+
+.margin-right-heading {
+  margin-right: 50px;
+}
