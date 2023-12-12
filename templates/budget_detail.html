@@ -119,33 +119,52 @@
             <canvas id="myDoughnutChart" width="400" height="400"></canvas>
         </div>
         <script>
-            // Get the context of the canvas element we want to select
-            var ctx = document.getElementById('myDoughnutChart').getContext('2d');
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById('myDoughnutChart').getContext('2d');
 
-            // Get the containerBudget div
-            var containerBudget = document.querySelector('.containerBudgetGraph');
+                // Get the containerBudget div
+                var containerBudget = document.querySelector('.containerBudgetGraph');
 
-            //console.log(containerBudget.dataset.monthlyIncome);
-            //console.log(containerBudget.dataset.totalSpent);
-            //var monthlyIncome = parseFloat(containerBudget.dataset.monthlyIncome);
-            //var totalSpent = parseFloat(containerBudget.dataset.totalSpent);
-            var monthlyIncome = containerBudget.dataset.monthlyIncome;
-            var totalSpent = containerBudget.dataset.totalSpent;
-            // Create the doughnut chart
-            var myDoughnutChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Monthly Income', 'Total Spent'],
-                    datasets: [{
-                        data: [monthlyIncome, totalSpent],
-                        backgroundColor: ['white', 'green'],
-                        borderWidth: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
+                // Parse data attributes to numbers
+                var monthlyIncome = parseFloat(containerBudget.dataset.monthlyIncome);
+                var totalSpent = parseFloat(containerBudget.dataset.totalSpent);
+
+                // Calculate spent percentage
+                var spentPercentage = (totalSpent / monthlyIncome) * 100;
+                spentPercentage = Math.min(spentPercentage, 100);
+
+                // Create the doughnut chart
+                var myDoughnutChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Remaining Budget', 'Total Spent'],
+                        datasets: [{
+                            data: [100 - spentPercentage, spentPercentage],
+                            backgroundColor: ['white', 'green'],
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var label = data.labels[tooltipItem.index];
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                                    // Format tooltip value as dollar amount
+                                    if (label === 'Total Spent') {
+                                        return label + ': $' + totalSpent.toFixed(2);
+                                    } else {
+                                        return label + ': $' + ((monthlyIncome - totalSpent) || 0).toFixed(2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             });
         </script>
     </div>

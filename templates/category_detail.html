@@ -1,64 +1,126 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .flex-container {
+        display: flex;
+    }
+</style>
 <a href="{% url 'budget' object.budget.pk %}" class="btn btn-success btn-sm"
     style="color:inherit; padding-left: 10px; padding-right: 10px;">Back to {{ object.budget.name }}</a>
-<div class="containerBudget">
-    <div class="dropdown float-right dropdown-container">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Category Options
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{% url 'category_detail' category.pk %}">View Category</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'category_edit' category.pk %}">Edit Category</a>
-            <a class="dropdown-item" href="{% url 'category_delete' category.pk %}">Delete Category</a>
-        </div>
-    </div>
-    <h2>{{ object.name }}</h2>
-    <hr class="rounded">
-    </br>
-    <div class="container-amount">
-        <h4>Amount Budgeted:</h4>
-        <div class="item-container-amount">
-            <h4>{{ object.amount_budgeted }}</h4>
-        </div>
-    </div>
-    <hr class="solid">
-    <div class="container-amount">
-        <h4>Amount Spent:</h4>
-        <div class="item-container-amount">
-            <h4>{{ object.amount_spent }}</h4>
-        </div>
-    </div>
-    <hr class="solid">
-    </br>
-    <h4>Transactions</h4>
-    <hr class="rounded">
-    {% for transaction in transactions %}
+<div class="flex-container">
     <div class="containerBudget">
-        <div class="container-amount">
-            <h6>Merchant:</h6>
-            <div class="item-container-amount">
-                <h6>{{ transaction.merchant }}</h6>
+        <div class="dropdown float-right dropdown-container">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Category Options
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{% url 'category_detail' category.pk %}">View Category</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'category_edit' category.pk %}">Edit Category</a>
+                <a class="dropdown-item" href="{% url 'category_delete' category.pk %}">Delete Category</a>
             </div>
         </div>
-        <hr class="solid">
-        <div class="container-amount">
-            <h6>Amount:</h6>
-            <div class="item-container-amount">
-                <h6>{{ transaction.amount }}</h6>
-            </div>
-        </div>
-        <hr class="solid">
-        <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-success btn-sm"
-            style="color:inherit; padding-left: 10px; padding-right: 10px;">Delete Transaction</a>
+        <h2>{{ object.name }}</h2>
+        <hr class="rounded">
         </br>
-        <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-success btn-sm"
-            style="color:inherit; padding-left: 10px; padding-right: 10px;">Edit Transaction</a>
+        <div class="container-amount">
+            <h4>Amount Budgeted:</h4>
+            <div class="item-container-amount">
+                <h4>{{ object.amount_budgeted }}</h4>
+            </div>
+        </div>
         <hr class="solid">
+        <div class="container-amount">
+            <h4>Amount Spent:</h4>
+            <div class="item-container-amount">
+                <h4>{{ object.amount_spent }}</h4>
+            </div>
+        </div>
+        <hr class="solid">
+        </br>
+        <h4>Transactions</h4>
+        <hr class="rounded">
+        {% for transaction in transactions %}
+        <div class="containerBudget">
+            <div class="container-amount">
+                <h6>Merchant:</h6>
+                <div class="item-container-amount">
+                    <h6>{{ transaction.merchant }}</h6>
+                </div>
+            </div>
+            <hr class="solid">
+            <div class="container-amount">
+                <h6>Amount:</h6>
+                <div class="item-container-amount">
+                    <h6>{{ transaction.amount }}</h6>
+                </div>
+            </div>
+            <hr class="solid">
+            <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-success btn-sm"
+                style="color:inherit; padding-left: 10px; padding-right: 10px;">Delete Transaction</a>
+            </br>
+            <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-success btn-sm"
+                style="color:inherit; padding-left: 10px; padding-right: 10px;">Edit Transaction</a>
+            <hr class="solid">
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+    <div class="containerBudgetGraph" data-monthly-income="{{ object.amount_budgeted.amount }}"
+        data-total-spent="{{ object.amount_spent.amount }}">
+        <div>
+            <canvas id="myDoughnutChart" width="400" height="400"></canvas>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById('myDoughnutChart').getContext('2d');
+
+                // Get the containerBudget div
+                var containerBudget = document.querySelector('.containerBudgetGraph');
+
+                // Parse data attributes to numbers
+                var monthlyIncome = parseFloat(containerBudget.dataset.monthlyIncome);
+                var totalSpent = parseFloat(containerBudget.dataset.totalSpent);
+
+                // Calculate spent percentage
+                var spentPercentage = (totalSpent / monthlyIncome) * 100;
+                spentPercentage = Math.min(spentPercentage, 100);
+
+                // Create the doughnut chart
+                var myDoughnutChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Remaining Budgeted', 'Total Spent'],
+                        datasets: [{
+                            data: [100 - spentPercentage, spentPercentage],
+                            backgroundColor: ['white', 'green'],
+                            borderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var label = data.labels[tooltipItem.index];
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                                    // Format tooltip value as dollar amount
+                                    if (label === 'Total Spent') {
+                                        return label + ': $' + totalSpent.toFixed(2);
+                                    } else {
+                                        return label + ': $' + ((monthlyIncome - totalSpent) || 0).toFixed(2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </div>
 </div>
 {% endblock content %}

@@ -30,9 +30,6 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="{% url 'user_home' %}">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -49,9 +46,6 @@
               </li>
               <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
             </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
           </li>
           <form class="d-flex" method="get" action="{% url 'search_results' %}">
             <input class="form-control me-2" name="q" type="search" placeholder="Find a budget" aria-label="Search">
