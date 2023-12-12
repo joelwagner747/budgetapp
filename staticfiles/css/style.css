@@ -1,0 +1,150 @@
+.page {
+  background-color: rgb(30, 31, 30);
+  color: aliceblue;
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+}
+
+.bottom-left-button {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.containerBudget {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgb(0, 0, 0);
+  padding: 20px;
+  margin: 10px;
+  flex-wrap: wrap;
+  text-align: left;
+  color: aliceblue;
+  border-radius: 15px;
+  border-color: rgb(21, 115, 71);
+  background-color: rgb(33, 37, 41);
+  border-width: 3px;
+  width: 50%;
+  overflow: auto;
+}
+
+.btn-large {
+  font-size: larger;
+  padding: 15px;
+  border-color: aliceblue;
+  width: 15%;
+  border-width: 2px;
+  border-radius: 15px;
+}
+
+.dropdown-container {
+  position: relative;
+  align-self: flex-end;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+}
+
+body {
+  background-color: rgb(30, 31, 30);
+}
+
+.content-wrapper {
+  margin-top: 5rem;
+}
+
+.warning-box {
+  background-color: #ffcccc;
+  /* Light red background color */
+  border: 1px solid #ff0000;
+  /* Red border */
+  color: #ff0000;
+  /* Red text color */
+  padding: 10px;
+  /* Padding around the content */
+  margin-bottom: 10px;
+  /* Optional margin at the bottom */
+  border-radius: 5px;
+  /* Optional: Rounded corners */
+  display: inline-block;
+}
+
+.custom-btn {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+hr.solid {
+  border-top: 3px solid #bbb;
+}
+
+hr.rounded {
+  border-top: 8px solid #bbb;
+  border-radius: 5px;
+}
+
+#pieChartContainer {
+  width: 25%;
+  height: 100px;
+  align-items: right;
+}
+
+.containerBudgetGraph {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgb(0, 0, 0);
+  padding: 20px;
+  margin: 10px;
+  flex-wrap: wrap;
+  text-align: left;
+  color: aliceblue;
+  border-radius: 15px;
+  border-color: rgb(21, 115, 71);
+  background-color: rgb(33, 37, 41);
+  border-width: 3px;
+  width: 50%;
+  overflow: auto;
+}
+
+.success-box {
+  background-color: #ccffcc;
+  /* Light green background color */
+  border: 1px solid #00cc00;
+  /* Green border */
+  color: #00cc00;
+  /* Green text color */
+  padding: 10px;
+  /* Padding around the content */
+  margin-bottom: 10px;
+  /* Optional margin at the bottom */
+  border-radius: 5px;
+  /* Optional: Rounded corners */
+  display: inline-block;
+  /* Make the box only as wide as the text */
+}
+
+.indented-heading {
+  margin-left: 20px;
+}
+
+.container-amount {
+  display: flex;
+  align-items: center;
+}
+
+/* Style for the items */
+.item-container-amount {
+  display: flex;
+  margin-left: auto;
+  /* Optional: Add space between the heading and the items */
+}
+
+.margin-right-heading {
+  margin-right: 50px;
+}
