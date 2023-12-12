@@ -17,6 +17,7 @@
     display: flex;
     }
 </style>
+
 <div class="flext-container">
     <div class="containerBudget">
         <div class="dropdown float-right dropdown-container">
@@ -29,25 +30,74 @@
             <a class="dropdown-item" href="{% url 'set_income' income.pk %}">Set Income</a>
             <a class="dropdown-item" href="{% url 'budget_edit' budget.pk %}">Edit Budget Name</a>
             <a class="dropdown-item" href="{% url 'budget_delete' budget.pk %}">Delete Budget</a>
-            <a class="dropdown-item" href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
-            </div>
+            <a class="dropdown-item" href="{% url 'budget_transactions' budget.pk %}">View Transactions</a>
         </div>
-        <h2>{{ object.name }}</h2>
-        <hr class="rounded">
-        </br>
+    </div>
+    <h2>{{ object.name }}</h2>
+    <hr class="rounded">
+    </br>
 
-        {% if over_budgeted %}
-        <div class="warning-box">Your budget is {{ over_budgeted }} over your income</div>
-        <hr class="solid">
-        {% endif %}
+    {% if over_budgeted %}
+    <div class="warning-box">Your planned budget is {{ over_budgeted }} over your income</div>
+    <hr class="solid">
+    {% endif %}
 
-        {% if income %}
-        <h4>Monthly Income: {{ income.monthly_income }}</h4>
-        <hr class="solid">
-    
-        {% else %}
-        <p>No income data available.</p>
-        {% endif %}
+    {% if under_budgeted %}
+    <div class="success-box">Your planned budget is {{ under_budgeted }} under your income</div>
+    <hr class="solid">
+    {% endif %}
+
+    {% if at_budget %}
+    <div class="success-box">Congratulations, Your planned budget perfectly matches your income</div>
+    <hr class="solid">
+    {% endif %}
+
+
+    {% if income %}
+    <div class="container-amount">
+        <h4>Monthly Income:</h4>
+        <div class="item-container-amount">
+            <h4>{{ income.monthly_income }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+
+    {% else %}
+    <p>No income data available.</p>
+    {% endif %}
+
+    <div class="container-amount">
+        <h4>Total Spent:</h4>
+        <div class="item-container-amount">
+            <h4>{{ total_spent }}</h4>
+        </div>
+    </div>
+    <hr class="solid">
+
+    {% for category in categories %}
+    <div class="container-amount">
+        <h4>Category:</h4>
+        <div class="item-container-amount">
+            <h4>{{ category.name }}</h4>
+        </div>
+    </div>
+    <div class="container-amount">
+        <h6>Amount Budgeted:</h6>
+        <div class="item-container-amount">
+            <h6>{{ category.amount_budgeted }}</h6>
+        </div>
+    </div>
+    <div class="container-amount">
+        <h6>Amount Spent:</h6>
+        <div class="item-container-amount">
+            <h6>{{ category.amount_spent }}</h6>
+        </div>
+    </div>
+    <a href="{% url 'category_detail' category.pk %}" class="btn btn-success btn-sm"
+        style="color:inherit; padding-left: 10px; padding-right: 10px;">View Details</a>
+    <hr class="solid">
+    {% endfor %}
+    <hr class="rounded">
 
         {% for category in categories %}
         <h5>Category: {{ category.name }}</h5>

@@ -53,8 +53,9 @@
           <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
           </li>
-          <form method="get" action="{% url 'search_results' %}">
+          <form class="d-flex" method="get" action="{% url 'search_results' %}">
             <input class="form-control me-2" name="q" type="search" placeholder="Find a budget" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
           </form>
         </ul>
         <form class="d-flex">

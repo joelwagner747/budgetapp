@@ -8,12 +8,14 @@
         align-items: center;
         height: 100vh;
     }
+
     input {
         max-width: 40em;
     }
 </style>
 <div class="form-container">
     <form method="post">{% csrf_token %}
+        <h1>Are you sure you want to delete your transaction at "{{ object.merchant }}" for {{ object.amount }}?</h1>
         {{ form|crispy }}
         <button class="btn btn-success" type="submit">Confirm</button>
     </form>

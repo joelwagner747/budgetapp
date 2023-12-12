@@ -108,9 +108,17 @@ class BudgetGet(UserPassesTestMixin, DetailView):
             amount_budgeted = Money(amount_budgeted, "USD")
         if amount_budgeted > income[0].monthly_income:
             context["over_budgeted"] = amount_budgeted - income[0].monthly_income
+        elif amount_budgeted < income[0].monthly_income:
+            context["under_budgeted"] = income[0].monthly_income - amount_budgeted
+        elif amount_budgeted == income[0].monthly_income:
+            context["at_budget"] = True
         context["amount_budgeted"] = amount_budgeted
         context["total_spent"] = total
+        context["percentage"] = int(
+            round((float(total.amount) / float(amount_budgeted.amount)) * 100)
+        )
         context["categories"] = categories
+        print(context["percentage"])
         return context
 
     def test_func(self):
@@ -165,6 +173,10 @@ class BudgetPost(UserPassesTestMixin, SingleObjectMixin, FormView):
             amount_budgeted = Money(amount_budgeted, "USD")
         if amount_budgeted > income[0].monthly_income:
             context["over_budgeted"] = amount_budgeted - income[0].monthly_income
+        elif amount_budgeted < income[0].monthly_income:
+            context["under_budgeted"] = income[0].monthly_income - amount_budgeted
+        elif amount_budgeted == income[0].monthly_income:
+            context["at_budget"] = True
         context["amount_budgeted"] = amount_budgeted
         context["total_spent"] = total
         context["categories"] = categories
