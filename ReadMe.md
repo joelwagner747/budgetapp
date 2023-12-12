@@ -1,4 +1,4 @@
-Name: Budgifiy
+Name: Budgify
 
 Created by: Joel Wagner and Eric Frazer
 
