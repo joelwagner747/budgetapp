@@ -19,18 +19,48 @@
       </div>
     </div>
     <h2>{{ budget.name }}</h2>
+    <hr class="rounded">
     {% if budget.income %}
-    <h4>Monthly Income: {{ budget.income.monthly_income }}</h4>
+    <div class="container-amount">
+      <h4>Monthly Income:</h4>
+      <div class="item-container-amount">
+        <h4>{{ budget.income.monthly_income }}</h4>
+      </div>
+    </div>
     {% else %}
     <p>No income data available.</p>
     {% endif %}
+    <hr class="solid">
+
+    <div class="container-amount">
+      <h4>Total Spent:</h4>
+      <div class="item-container-amount">
+        <h4>{{ budget.total }}</h4>
+      </div>
+    </div>
+    <hr class="solid">
+
     {% for category in budget.categories %}
-    <h5>Category: {{ category.name }}</h5>
-    <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
-    <p>Amount Spent: {{ category.amount_spent}}</p>
+    <div class="container-amount">
+      <h4>Category:</h4>
+      <div class="item-container-amount">
+        <h4>{{ category.name }}</h4>
+      </div>
+    </div>
+    <div class="container-amount">
+      <h6>Amount Budgeted:</h6>
+      <div class="item-container-amount">
+        <h6>{{ category.amount_budgeted }}</h6>
+      </div>
+    </div>
+    <div class="container-amount">
+      <h6>Amount Spent:</h6>
+      <div class="item-container-amount">
+        <h6>{{ category.amount_spent}}</h6>
+      </div>
+    </div>
     <hr class="solid">
     {% endfor %}
-    <h4>Total Spent: {{ budget.total }}</h4>
   </div>
   {% endfor %}
   <button class="btn btn-success bottom-left-button btn-large" type="submit">
