@@ -13,14 +13,16 @@
         max-width: 40em;
     }
 </style>
-<form method="post">{% csrf_token %}
-    <h1>Set Your Monthly Income</h1>
-    {{ form|crispy }}
-    <style type="text/css">
-        #id_monthly_income_1 {
-            display: none;
-        }
-    </style>
-    <button class="btn btn-success" type="submit">Set</button>
-</form>
+<div class="form-container">
+    <form method="post">{% csrf_token %}
+        <h1>Set Your Monthly Income</h1>
+        {{ form|crispy }}
+        <style type="text/css">
+            #id_monthly_income_1 {
+                display: none;
+            }
+        </style>
+        <button class="btn btn-success" type="submit">Set</button>
+    </form>
+</div>
 {% endblock content %}

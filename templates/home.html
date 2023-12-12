@@ -1,7 +1,57 @@
 <!-- templates/home.html -->
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Home{% endblock title %}
 
 {% block content %}
+<style>
+    .functionality-image {
+        width: 100%;
+        height: auto;
+    }
+
+    .flex-containter {
+        display: flex;
+    }
+
+    .heading {
+        text-align: center;
+    }
+
+    .btn {
+        margin: 0 5px;
+        /* Adjust margin as needed */
+    }
+</style>
+<div class="heading">
+    <h1>Welcome, To Budgify</h1>
+    <h5>The Future of Customized Budgetting</h5>
+    <a href="{% url 'login' %}" class="btn btn-success btn-lg"
+        style="color:inherit; padding-left: 10px; padding-right: 10px;">Log In</a>
+    <a href="{% url 'signup' %}" class="btn btn-success btn-lg"
+        style="color:inherit; padding-left: 10px; padding-right: 10px;">Sign Up</a>
+</div>
+<div class="flex-containter">
+    <div class="containerBudget">
+        <h2>All Your Budgets in One Place</h2>
+        <img class="functionality-image" src="{% static '/images/Homepage.png' %}">
+    </div>
+
+    <div class="containerBudget">
+        <h2>Create Customized Budgets Tailored to Your Needs</h2>
+        <img class="functionality-image" src="{% static '/images/Budget.png' %}">
+    </div>
+</div>
+<div class="flex-containter">
+    <div class="containerBudget">
+        <h2>Personalized Categories Automatically Update as You Add Transactions</h2>
+        <img class="functionality-image" src="{% static '/images/Categories2.png' %}">
+    </div>
+
+    <div class="containerBudget">
+        <h2>View All Your Transactions to Better Understand Your Spending Habits</h2>
+        <img class="functionality-image" src="{% static '/images/Transactions.png' %}">
+    </div>
+</div>
 {% endblock content %}

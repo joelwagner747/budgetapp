@@ -114,11 +114,7 @@ class BudgetGet(UserPassesTestMixin, DetailView):
             context["at_budget"] = True
         context["amount_budgeted"] = amount_budgeted
         context["total_spent"] = total
-        context["percentage"] = int(
-            round((float(total.amount) / float(amount_budgeted.amount)) * 100)
-        )
         context["categories"] = categories
-        print(context["percentage"])
         return context
 
     def test_func(self):
