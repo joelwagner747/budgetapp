@@ -87,3 +87,27 @@ hr.rounded {
   border-top: 8px solid #bbb;
   border-radius: 5px;
 }
+
+#pieChartContainer {
+  width: 25%; 
+  height: 100px; 
+  align-items: right;
+}
+
+.containerBudgetGraph {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid rgb(0, 0, 0);
+  padding: 20px;
+  margin: 10px;
+  flex-wrap: wrap;
+  text-align: left;
+  color: aliceblue;
+  border-radius: 15px;
+  border-color: rgb(21, 115, 71);
+  background-color: rgb(33, 37, 41);
+  border-width: 3px;
+  width: 50%;
+  overflow: auto;
+}
