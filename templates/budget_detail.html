@@ -12,15 +12,19 @@
     input {
         max-width: 40em;
     }
+
+    .flex-container {
+    display: flex;
+    }
 </style>
 
-<div class="containerBudget">
-    <div class="dropdown float-right dropdown-container">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
+<div class="flext-container">
+    <div class="containerBudget">
+        <div class="dropdown float-right dropdown-container">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Budget Options
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" href="{% url 'budget' budget.pk %}">View Budget</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="{% url 'set_income' income.pk %}">Set Income</a>
@@ -95,16 +99,61 @@
     {% endfor %}
     <hr class="rounded">
 
-    <a href="{% url 'budget_transactions' budget.pk %}">Transactions</a>
+        {% for category in categories %}
+        <h5>Category: {{ category.name }}</h5>
+        <p>Amount Budgeted: {{ category.amount_budgeted }}</p>
+        <p>Amount Spent: {{ category.amount_spent}}</p>
+        <a href="{% url 'category_detail' category.pk %}" class="btn btn-success btn-sm" style="color:inherit; padding-left: 10px; padding-right: 10px;">View Details</a>
+        {% endfor %}
+        <hr class="solid">
+        <h4>Total Spent: {{ total_spent }}</h4>
 
-    <form action="" method="post">{% csrf_token %}
-        <style type="text/css">
-            #id_amount_budgeted_1 {
-                display: none;
-            }
-        </style>
-        {{ form|crispy }}
-        <button class="btn btn-success" type="submit">Add Category</button>
-    </form>
+        <a href="{% url 'budget_transactions' budget.pk %}" class="btn btn-success btn-sm" style="color:inherit; padding-left: 10px; padding-right: 10px;">Transactions</a>
+        </br>
+        <form action="" method="post">{% csrf_token %}
+            <style type="text/css">
+                #id_amount_budgeted_1 {
+                    display: none;
+                }
+            </style>
+            {{ form|crispy }}
+            <button class="btn btn-success" type="submit">Add Category</button>
+        </form>
+    </div>
+    <div class="containerBudgetGraph" data-monthly-income="{{ income.monthly_income.amount }}" data-total-spent="{{ total_spent.amount }}">
+        <div>
+            <canvas id="myDoughnutChart" width="400" height="400"></canvas>
+        </div>
+        <script>
+            // Get the context of the canvas element we want to select
+            var ctx = document.getElementById('myDoughnutChart').getContext('2d');
+    
+            // Get the containerBudget div
+            var containerBudget = document.querySelector('.containerBudgetGraph');
+    
+            //console.log(containerBudget.dataset.monthlyIncome);
+            //console.log(containerBudget.dataset.totalSpent);
+            //var monthlyIncome = parseFloat(containerBudget.dataset.monthlyIncome);
+            //var totalSpent = parseFloat(containerBudget.dataset.totalSpent);
+            var monthlyIncome = containerBudget.dataset.monthlyIncome;
+            var totalSpent = containerBudget.dataset.totalSpent;
+            // Create the doughnut chart
+            var myDoughnutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Monthly Income', 'Total Spent'],
+                    datasets: [{
+                        data: [monthlyIncome, totalSpent], 
+                        backgroundColor: ['white', 'green'],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        </script>
+    </div>
 </div>
 {% endblock content %}
