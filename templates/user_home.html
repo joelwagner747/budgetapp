@@ -63,9 +63,10 @@
     {% endfor %}
   </div>
   {% endfor %}
-  <button class="btn btn-success bottom-left-button btn-large" type="submit">
-    <a href="{% url 'add_budget' %}" style="color:inherit; text-decoration: none;">Add Budget</a>
-  </button>
+  <a href="{% url 'add_budget' %}" style="color:inherit; text-decoration: none;"><button
+      class="btn btn-success bottom-left-button btn-large" type="submit">
+      Add Budget
+    </button></a>
 
 </main>
 {% endblock content %}

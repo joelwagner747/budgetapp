@@ -36,7 +36,9 @@ class AddTransactionView(LoginRequiredMixin, View):
                 )
 
             transaction.save()
-            return HttpResponseRedirect(reverse_lazy("user_home"))
+            selected_budget_id = transaction.budget.id
+            redirect_url = reverse_lazy("budget", kwargs={"pk": selected_budget_id})
+            return HttpResponseRedirect(redirect_url)
         return render(request, self.template_name, {"form": form})
 
 
